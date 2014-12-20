@@ -1,4 +1,3 @@
-//We always have to include the library
 #include "LedControl.h"
 
 /*
@@ -25,18 +24,42 @@ const int buttonPin = 26;     // right
 /* we always wait a bit between updates of the display */
 unsigned long delaytime=0;
 
+int interval = 100;
+unsigned long time;
+unsigned long lasttime;
+
 void setup() {
   lc.shutdown(0,false);
-  lc.setIntensity(0,0);
+  lc.setIntensity(0,8);
   lc.clearDisplay(0);
+  lasttime = millis();
+  lc.setLed(0,0,0,false);
 }
+
 
 
 void loop() { 
   //single();
   //r[random(0,7)][random(0,7)] = !r[random(0,7)][random(0,7)];
-  lc.clearDisplay(0);
-  lc.setColumn(0,2,B10110000);
-  lc.setChar(0,3,'a',false);
+  //lc.clearDisplay(0);
+  //lc.setColumn(0,2,B10110000);
+  //lc.setChar(0,3,'a',false);
+  
+  time = millis();
+
+  if(time - lasttime > interval){
+    lasttime = time;
+    tick();
+  }
+
+}
+
+
+void tick(){
+  interval = analogRead(0);
+  //lc.setLed(0,row,col,r[row][col]);
+  lc.setLed(0,0,0,true);
+  delay(10);
+  lc.setLed(0,0,0,false);
 
 }
