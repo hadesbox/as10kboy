@@ -121,15 +121,51 @@ void readControls(){
   if(digitalRead(blackup) == HIGH and cursorcol>0) {
     cursorcol--; 
   }
+  
+  if(digitalRead(redleft) == HIGH){
+  
+    if(cursorcol == 0) {
+      sequence1[cursorrow]=!sequence1[cursorrow];
+    }
+    else if(cursorcol == 1) {
+      sequence1[8+cursorrow]=!sequence1[8+cursorrow];
+    } 
+  
+  }  
+  
 }
 
 void printSequenceAndCursor(){ 
   lc.clearDisplay(0);
   //lc.setColumn(0,7,B10110000);
 
-  
+  int seq1a = sequence1[0] << 7 |
+             sequence1[1] << 6 | 
+             sequence1[2] << 5 | 
+             sequence1[3] << 4 | 
+             sequence1[4] << 3 | 
+             sequence1[5] << 2 | 
+             sequence1[6] << 1 | 
+             sequence1[7];
 
+  int seq1b = sequence1[8] << 7 |
+             sequence1[9] << 6 | 
+             sequence1[10] << 5 | 
+             sequence1[11] << 4 | 
+             sequence1[12] << 3 | 
+             sequence1[13] << 2 | 
+             sequence1[14] << 1 | 
+             sequence1[15];
+
+  Serial.print(seq1a,BIN);
+  Serial.println(seq1b,BIN);
+  
   lc.setLed(0,cursorrow,7-cursorcol, true);
+  
+  lc.setColumn(0,7,seq1a);
+  lc.setColumn(0,6,seq1b);
+
+  
 }
 
 void printStep(int sequence, int rowtoprint, int coltoprint, boolean state){
