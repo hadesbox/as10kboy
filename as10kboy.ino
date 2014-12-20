@@ -9,6 +9,11 @@
 
 int ledrowmap[4][2] = {{7,6},{5,4},{3,2},{1,0}};
  
+int sequence1[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+int sequence2[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+int sequence3[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+int sequence4[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+ 
 LedControl lc=LedControl(12,11,10,1);
 
 #include <binary.h>
@@ -36,7 +41,6 @@ int cursorrow=0;
 int cursorcol=0;
 int lastreadcontrols=0;
 
-
 void setup() {
   //setup the ledmatrix
   lc.shutdown(0,false);
@@ -54,7 +58,6 @@ void setup() {
   pinMode(redright, INPUT);
   
   Serial.begin(9600);
-  
 }
 
 void loop() {
@@ -74,6 +77,7 @@ void loop() {
     lasttime = time;
     tick();
   }
+  printSequenceAndCursor();
 }
 
 void tick(){
@@ -96,7 +100,6 @@ void tick(){
   printStep(2,rowtoprint,coltoprint,true);
   printStep(3,rowtoprint,coltoprint,true);
   //printing the cursor
-  printCursor(true);
   delay(10);
   printStep(0,rowtoprint,coltoprint,false);
   printStep(1,rowtoprint,coltoprint,false);
@@ -106,28 +109,27 @@ void tick(){
 
 void readControls(){
   interval = analogRead(0);
-  int buttonState = digitalRead(blackright);
-  if(buttonState == HIGH and cursorrow<7) {
+  if(digitalRead(blackright) == HIGH and cursorrow<7) {
     cursorrow++; 
   }
-  buttonState = digitalRead(blackleft);
-  if(buttonState == HIGH and cursorrow>0) {
+  if(digitalRead(blackleft) == HIGH and cursorrow>0) {
     cursorrow--; 
-  }
-  
-  buttonState = digitalRead(blackdown);
-  if(buttonState == HIGH and cursorcol<7) {
+  }  
+  if(digitalRead(blackdown) == HIGH and cursorcol<7) {
     cursorcol++; 
   }
-  buttonState = digitalRead(blackup);
-  if(buttonState == HIGH and cursorcol>0) {
+  if(digitalRead(blackup) == HIGH and cursorcol>0) {
     cursorcol--; 
   }
-  
 }
 
-void printCursor(boolean state){ 
-  lc.setLed(0,cursorrow,7-cursorcol, state);
+void printSequenceAndCursor(){ 
+  lc.clearDisplay(0);
+  //lc.setColumn(0,7,B10110000);
+
+  
+
+  lc.setLed(0,cursorrow,7-cursorcol, true);
 }
 
 void printStep(int sequence, int rowtoprint, int coltoprint, boolean state){
